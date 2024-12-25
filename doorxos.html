@@ -1,0 +1,1896 @@
+<html><head><base href="/" />
+<style>
+:root {
+  --taskbar-height: 40px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #008080;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.desktop {
+  height: calc(100vh - var(--taskbar-height));
+  position: relative;
+}
+
+.desktop-icon {
+  width: 70px;
+  text-align: center;
+  margin: 20px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+}
+
+.icon-image {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 5px;
+}
+
+.window {
+  position: absolute;
+  background: #000;
+  border: 1px solid #000;
+  min-width: 200px;
+  min-height: 150px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  resize: both;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.title-bar {
+  background: #000080;
+  color: white;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.window-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.control-button {
+  background: #c0c0c0;
+  border: 1px solid #fff;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.window-content {
+  padding: 0;
+  flex-grow: 1;
+  background: #000;
+}
+
+.taskbar {
+  height: var(--taskbar-height);
+  background: #c0c0c0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 5px;
+}
+
+/* Update running-apps container to ensure horizontal flow */
+.running-apps {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  overflow-x: auto;
+}
+
+/* Update app-tab styles for better horizontal layout */
+.app-tab {
+  background: #a0a0a0;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  white-space: nowrap;  /* Prevent text wrapping */
+}
+
+.app-tab.active {
+  background: #fff;
+}
+
+.app-tab-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;  /* Prevent icon from shrinking */
+}
+
+.terminal {
+  background: #000;
+  color: #00ff00;
+  font-family: monospace;
+  padding: 10px;
+  height: calc(100% - 20px);
+  overflow-y: auto;
+}
+
+.terminal-output {
+  margin-bottom: 5px;
+  white-space: pre-wrap;
+}
+
+.terminal-input-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.terminal-prompt {
+  color: #00ff00;
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  color: #00ff00;
+  font-family: monospace;
+  font-size: inherit;
+  flex-grow: 1;
+  outline: none;
+}
+
+.window {
+  user-select: none;
+}
+
+/* Add new styles for chat window */
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  color: #000;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.chat-input-container {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input {
+  flex-grow: 1;
+  padding: 5px;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.chat-username {
+  font-weight: bold;
+  color: #000080;
+  margin-right: 5px;
+}
+
+.chat-time {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: 5px;
+}
+
+.system-message {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin: 5px 0;
+  padding: 4px;
+}
+
+/* Add styles for the browser window */
+.browser-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+}
+
+.browser-toolbar {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  background: #f1f1f1;
+  border-bottom: 1px solid #ddd;
+}
+
+.browser-button {
+  padding: 5px 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.url-bar {
+  flex-grow: 1;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.browser-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.search-container {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.search-logo {
+  font-size: 48px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #444;
+}
+
+.search-input {
+  width: 80%;
+  max-width: 600px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  margin-bottom: 20px;
+}
+
+.search-results {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Add styles for crystal clicker */
+#crystal-button {
+  cursor: pointer;
+  margin: 20px;
+  transition: transform 0.1s;
+}
+
+/* Add styles for achievements */
+.achievement {
+  padding: 10px;
+  margin: 10px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.achievement.unlocked {
+  background: #e7f0e7;
+  border-color: #90EE90;
+}
+
+.achievement-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.achievement-hint {
+  color: #666;
+  font-style: italic;
+}
+
+.achievement-reward {
+  color: #4CAF50;
+  margin-top: 5px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
+/* Start Menu Styles */
+.start-menu {
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  background: #c0c0c0;
+  border: 2px solid #fff;
+  border-bottom: none;
+  padding: 10px;
+  min-width: 200px;
+  animation: slideUp 0.2s ease-out;
+}
+
+.account-section {
+  padding: 10px;
+}
+
+.current-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  border-bottom: 1px solid #888;
+}
+
+.account-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.background-picker {
+  margin-top: 10px;
+}
+
+.bg-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.bg-option:hover {
+  background: #fff;
+}
+
+.color-preview {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #000;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* Calculator Styles */
+.calc-btn {
+  padding: 10px;
+  font-size: 1.1em;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calc-btn:hover {
+  background: #e0e0e0;
+}
+
+.calc-btn:active {
+  background: #d0d0d0;
+}
+</style>
+</head>
+<body>
+<div class="desktop">
+  <div class="desktop-icon" onclick="openTerminal()">
+    <svg class="icon-image" viewBox="0 0 24 24">
+      <rect x="2" y="2" width="20" height="20" fill="#000" />
+      <text x="6" y="16" fill="#00ff00" font-family="monospace" font-size="14">></text>
+    </svg>
+    <div>Terminal</div>
+  </div>
+
+  <div class="desktop-icon" onclick="openChat()">
+    <svg class="icon-image" viewBox="0 0 24 24">
+      <rect x="2" y="2" width="20" height="20" fill="#FFF" />
+      <path d="M2 2h20v4H2z" fill="#444"/>
+    </svg>
+    <div>Chat</div>
+  </div>
+  
+  <div class="desktop-icon">
+    <svg class="icon-image" viewBox="0 0 24 24">
+      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#FFF"/>
+    </svg>
+    <div>Documents</div>
+  </div>
+
+  <div class="desktop-icon" onclick="openBrowser()">
+    <svg class="icon-image" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#4285F4"/>
+      <circle cx="12" cy="12" r="4" fill="#FFF"/>
+    </svg>
+    <div>Browse</div>
+  </div>
+
+  <div class="desktop-icon" onclick="openOnyx()">
+    <svg class="icon-image" viewBox="0 0 24 24">
+      <rect x="2" y="2" width="20" height="20" fill="#FF6600"/>
+      <path d="M12 7l-5 5 5 5 5-5z" fill="#000"/>
+    </svg>
+    <div>Half-Life: Onyx</div>
+  </div>
+
+  <div class="desktop-icon" onclick="openAchievements()">
+    <svg class="icon-image" viewBox="0 0 24 24">
+      <rect x="2" y="2" width="20" height="20" fill="#FFD700"/>
+      <path d="M12 5l2.4 5.4 6.1.5-4.6 4 1.3 6.1-5.2-3.1-5.2 3.1 1.3-6.1-4.6-4 6.1-.5z" fill="#FFA500"/>
+    </svg>
+    <div>Achievements</div>
+  </div>
+
+  <div class="desktop-icon" onclick="openVapor()">
+    <svg class="icon-image" viewBox="0 0 24 24">
+      <rect x="2" y="2" width="20" height="20" fill="#1b2838"/>
+      <path d="M7 12h10M12 7v10" stroke="#66c0f4" stroke-width="2"/>
+    </svg>
+    <div>Vapor</div>
+  </div>
+
+  <div class="desktop-icon" onclick="openCalculator()">
+    <svg class="icon-image" viewBox="0 0 24 24">
+      <rect x="2" y="2" width="20" height="20" fill="#4CAF50"/>
+      <path d="M6 6h12v4H6zM6 12h3v2H6zM11 12h3v2h-3zM16 12h3v2h-3zM6 16h3v2H6zM11 16h3v2h-3zM16 16h3v2h-3z" fill="white"/>
+    </svg>
+    <div>Calculator</div>
+  </div>
+</div>
+
+<div class="taskbar">
+  <button class="start-button">Start</button>
+  <div class="running-apps"></div>
+</div>
+
+<script>
+const achievements = {
+  smlFan: {
+    name: 'SML Fan',
+    description: 'Found the secret search term!',
+    hint: '???',
+    unlocked: false,
+    reward: 'Unlocked custom backgrounds and user accounts'
+  },
+  websimSeeker: {
+    name: 'Web Explorer',
+    description: 'Found the secret website!',
+    hint: 'Try searching for something special...',
+    unlocked: false,
+    reward: 'Unlocked Mortir Browser'
+  },
+  crystalMaster: {
+    name: 'Crystal Master',
+    description: 'Collected 1000 crystals!',
+    hint: 'Keep collecting those crystals...',
+    unlocked: false,
+    reward: 'Crystal gains doubled permanently'
+  },
+  inappropriateSearch: {
+    name: 'What is wrong with you.',
+    description: 'You know what you did.',
+    hint: '???',
+    unlocked: false,
+    reward: 'Your browser has been replaced with a safer option.'
+  }
+};
+
+const backgroundColors = [
+  {name: 'Classic Teal', color: '#008080'},
+  {name: 'SML Red', color: '#cc0000'},
+  {name: 'SML Blue', color: '#0066cc'},
+  {name: 'Dark Mode', color: '#222222'},
+  {name: 'Light Mode', color: '#f0f0f0'}
+];
+
+const userAccounts = [
+  {
+    username: 'Guest',
+    avatar: 'guest.png'
+  }
+];
+
+const appStates = {
+  terminal: {
+    history: [],
+    isOpen: false,
+    position: { x: 150, y: 100 }
+  },
+  chat: {
+    messages: [],
+    isOpen: false,
+    position: { x: 200, y: 50 }
+  },
+  browser: {
+    history: [],
+    currentUrl: 'https://boogle.door',
+    isOpen: false,
+    position: { x: 250, y: 50 }
+  },
+  onyx: {
+    crystalCount: 0,
+    researcherCount: 0,
+    isOpen: false,
+    position: { x: 200, y: 50 }
+  },
+  achievements: {
+    isOpen: false,
+    position: { x: 300, y: 100 }
+  },
+  mortir: {
+    posts: [], // Will store user-added content
+    isOpen: false,
+    position: { x: 300, y: 100 }
+  },
+  vapor: {
+    installed: [], // Track installed apps
+    isOpen: false,
+    position: { x: 350, y: 100 }
+  },
+  calculator: {
+    isOpen: false,
+    position: { x: 400, y: 100 },
+    currentCalculation: ''
+  },
+  chromium: {
+    isOpen: false,
+    position: { x: 250, y: 50 }
+  }
+};
+
+// Function to update taskbar
+function updateTaskbar() {
+  const runningApps = document.querySelector('.running-apps');
+  runningApps.innerHTML = '';
+
+  // Create tabs for each open app
+  Object.keys(appStates).forEach(appName => {
+    if (appStates[appName].isOpen) {
+      const tab = document.createElement('div');
+      tab.className = 'app-tab';
+      
+      // Capitalize first letter of app name
+      const displayName = appName.charAt(0).toUpperCase() + appName.slice(1);
+      
+      // Add appropriate icon SVG based on app
+      let iconSvg;
+      switch(appName) {
+        case 'terminal':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#000" /><text x="6" y="16" fill="#00ff00" font-family="monospace" font-size="14">></text></svg>`;
+          break;
+        case 'chat':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#FFF" /><path d="M2 2h20v4H2z" fill="#444"/></svg>`;
+          break;
+        case 'browser':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#4285F4"/><circle cx="12" cy="12" r="4" fill="#FFF"/></svg>`;
+          break;
+        case 'onyx':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#FF6600"/><path d="M12 7l-5 5 5 5 5-5z" fill="#000"/></svg>`;
+          break;
+        case 'achievements':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#FFD700"/><path d="M12 5l2.4 5.4 6.1.5-4.6 4 1.3 6.1-5.2-3.1-5.2 3.1 1.3-6.1-4.6-4 6.1-.5z" fill="#FFA500"/></svg>`;
+          break;
+        case 'mortir':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#9C27B0"/><path d="M8 4l-4 4 4 4 4-4z" fill="#000"/></svg>`;
+          break;
+        case 'vapor':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#1b2838"/><path d="M7 12h10M12 7v10" stroke="#66c0f4" stroke-width="2"/></svg>`;
+          break;
+        case 'calculator':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#4CAF50"/><path d="M6 6h12v4H6zM6 12h3v2H6zM11 12h3v2h-3zM16 12h3v2h-3zM6 16h3v2H6zM11 16h3v2h-3zM16 16h3v2h-3z" fill="white"/></svg>`;
+          break;
+        case 'chromium':
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#f1f1f1"/><path d="M10 3h4v4h-4z" fill="#4285F4"/></svg>`;
+          break;
+        default:
+          iconSvg = `<svg class="app-tab-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="#ddd"/></svg>`;
+      }
+      
+      tab.innerHTML = `${iconSvg}<span>${displayName}</span>`;
+      
+      // Add click handler to focus the app
+      tab.addEventListener('click', () => focusApp(appName));
+      
+      runningApps.appendChild(tab);
+    }
+  });
+}
+
+// Function to focus an app when its taskbar tab is clicked
+function focusApp(appName) {
+  const windows = document.querySelectorAll('.window');
+  windows.forEach(win => {
+    if (win.getAttribute('data-app') === appName) {
+      win.style.display = 'flex';
+      win.style.zIndex = '100';
+    } else {
+      win.style.zIndex = '1';
+    }
+  });
+}
+
+// Function to open Chat
+let chatRoom; // Add chatRoom to global state
+function openChat(x = 200, y = 50) { // Add default params for when opened from icon
+  const chat = document.createElement('div');
+  chat.className = 'window chat-window';
+  chat.setAttribute('data-app', 'chat');
+  chat.style.top = y + 'px';
+  chat.style.left = x + 'px';
+  chat.style.width = '400px';
+  chat.style.height = '500px';
+  
+  chat.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Chat</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <div class="chat-window">
+        <div class="chat-messages"></div>
+        <div class="chat-input-container">
+          <input type="text" class="chat-input" placeholder="Type your message...">
+          <button class="send-button">Send</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.querySelector('.desktop').appendChild(chat);
+  setupDraggable(chat);
+  setupWindowControls(chat);
+  
+  appStates.chat.isOpen = true;
+  updateTaskbar();
+  
+  // Initialize WebsimSocket connection
+  chatRoom = new WebsimSocket();
+  const messages = chat.querySelector('.chat-messages');
+  
+  // Add styles for user messages vs own messages
+  const userStyle = document.createElement('style');
+  userStyle.textContent = `
+    .chat-message.own-message {
+      text-align: right;
+      background: #e3f2fd;
+      border-radius: 10px;
+      margin: 5px 0;
+      padding: 8px 12px;
+    }
+    .chat-message.other-message {
+      text-align: left;
+      background: #f5f5f5;
+      border-radius: 10px;
+      margin: 5px 0;
+      padding: 8px 12px;
+    }
+    .chat-username {
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-right: 5px;
+    }
+    .chat-time {
+      font-size: 0.8em;
+      color: #666;
+      margin-left: 5px;
+    }
+    .system-message {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      margin: 5px 0;
+      padding: 4px;
+    }
+  `;
+  document.head.appendChild(userStyle);
+  
+  // Handle incoming messages
+  chatRoom.onmessage = (event) => {
+    const data = event.data;
+    const messageDiv = document.createElement('div');
+    const time = new Date().toLocaleTimeString();
+    
+    switch (data.type) {
+      case 'connected':
+        messageDiv.className = 'system-message';
+        messageDiv.innerHTML = `${data.username} joined the chat`;
+        break;
+      case 'disconnected':
+        messageDiv.className = 'system-message';
+        messageDiv.innerHTML = `${data.username} left the chat`;
+        break;
+      case 'chat':
+        // Check if message is from current user
+        const isOwnMessage = data.clientId === chatRoom.party.client.id;
+        messageDiv.className = `chat-message ${isOwnMessage ? 'own-message' : 'other-message'}`;
+        messageDiv.innerHTML = `
+          <span class="chat-username">${data.username}</span>
+          <span class="chat-content">${data.message}</span>
+          <span class="chat-time">${time}</span>
+        `;
+        break;
+    }
+    messages.appendChild(messageDiv);
+    messages.scrollTop = messages.scrollHeight;
+  };
+  
+  // Handle message sending
+  const input = chat.querySelector('.chat-input');
+  const sendButton = chat.querySelector('.send-button');
+  
+  function sendMessage() {
+    const message = input.value.trim();
+    if (message) {
+      chatRoom.send({
+        type: 'chat',
+        message: message,
+        echo: true
+      });
+      input.value = '';
+    }
+  }
+  
+  // Add event listeners
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+  
+  sendButton.addEventListener('click', sendMessage);
+  
+  // Focus input when clicking anywhere in chat window
+  chat.addEventListener('click', () => {
+    if (!window.getSelection().toString()) {
+      input.focus();
+    }
+  });
+}
+
+// Add cleanup when closing chat window
+function setupWindowControls(window) {
+  const appName = window.getAttribute('data-app');
+  
+  window.querySelectorAll('.control-button').forEach(button => {
+    button.addEventListener('click', function() {
+      if (this.textContent === '×') {
+        if (window.classList.contains('chat-window')) {
+          chatRoom.close();
+        }
+        window.remove();
+        if (appName) {
+          appStates[appName].isOpen = false;
+          updateTaskbar();
+        }
+      } else if (this.textContent === '□') {
+        // ... maximize code stays the same ...
+      } else if (this.textContent === '−') {
+        window.style.display = 'none';
+      }
+    });
+  });
+}
+
+// Terminal command to open chat
+function handleCommand(commandText) {
+  const terminalContainer = terminal.querySelector('.terminal');
+  const output = document.createElement('div');
+  output.className = 'terminal-output';
+  
+  const command = commandText.trim().toLowerCase();
+  
+  switch(command) {
+    case 'connect_online':
+      output.textContent = 'Opening chat application...';
+      const terminalRect = terminal.getBoundingClientRect();
+      openChat(terminalRect.right + 20, terminalRect.top);
+      break;
+    case 'help':
+      output.textContent = `Available commands:
+- help: Show this help message
+- clear: Clear the terminal
+- echo [text]: Display text
+- date: Show current date and time
+- whoami: Display current user
+- ls: List directory contents
+- pwd: Print working directory
+- version: Show system version
+- time: Show current time
+- unlock_mortir: Unlock Mortir Browser (requires Web Explorer achievement)`;
+      break;
+    case 'clear':
+      terminalContainer.innerHTML = '';
+      terminalContainer.appendChild(createInputLine());
+      return;
+    case 'date':
+      output.textContent = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+      break;
+    case 'time':
+      output.textContent = new Date().toLocaleTimeString();
+      break;
+    case 'whoami':
+      output.textContent = 'user@doors';
+      break;
+    case 'version':
+      output.textContent = 'Doors OS v1.0.0';
+      break;
+    case 'ls':
+      output.textContent = `Documents/
+Downloads/
+Pictures/
+Music/
+Desktop/`;
+      break;
+    case 'pwd':
+      output.textContent = '/home/user';
+      break;
+    case 'unlock_mortir':
+      if (achievements.websimSeeker.unlocked) {
+        output.textContent = 'Unlocking Mortir browser...';
+        const mortirIcon = document.createElement('div');
+        mortirIcon.className = 'desktop-icon';
+        mortirIcon.onclick = () => openMortir();
+        mortirIcon.innerHTML = `
+          <svg class="icon-image" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="#9C27B0"/>
+            <path d="M8 4l-4 4 4 4 4-4z" fill="#000"/>
+          </svg>
+          <div>Mortir</div>
+        `;
+        document.querySelector('.desktop').appendChild(mortirIcon);
+        
+        // Update achievements description
+        achievements.websimSeeker.reward = 'Unlocked Mortir Browser and special terminal commands';
+      } else {
+        output.textContent = 'Command unavailable. Hint: Search for something special first...';
+      }
+      break;
+    default:
+      if (command.startsWith('echo ')) {
+        output.textContent = commandText.slice(5);
+      } else if (command !== '') {
+        output.textContent = `Command not found: ${command}. Type 'help' for available commands.`;
+      }
+  }
+  
+  terminalContainer.appendChild(output);
+  terminalContainer.appendChild(createInputLine());
+  
+  terminalContainer.scrollTop = terminalContainer.scrollHeight;
+}
+
+function openTerminal() {
+  if (appStates.terminal.isOpen) {
+    focusApp('terminal');
+    return;
+  }
+
+  terminal = document.createElement('div'); // Store reference
+  terminal.className = 'window';
+  terminal.setAttribute('data-app', 'terminal');
+  terminal.style.width = '550px';
+  terminal.style.height = '400px';
+  
+  terminal.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Terminal</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <div class="terminal">
+        <div class="terminal-output">Welcome to Doors Terminal v1.0</div>
+        <div class="terminal-output">Type 'help' for available commands</div>
+        <div class="terminal-input-line">
+          <span class="terminal-prompt">></span>
+          <input type="text" class="terminal-input" autocomplete="off">
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.querySelector('.desktop').appendChild(terminal);
+  setupDraggable(terminal);
+  setupWindowControls(terminal);
+  
+  appStates.terminal.isOpen = true;
+  updateTaskbar();
+
+  // Restore position if saved
+  if (appStates.terminal.position) {
+    terminal.style.left = appStates.terminal.position.x + 'px';
+    terminal.style.top = appStates.terminal.position.y + 'px';
+  }
+
+  const terminalContainer = terminal.querySelector('.terminal');
+  const input = terminal.querySelector('.terminal-input');
+  
+  setTimeout(() => input.focus(), 0);
+
+  terminalContainer.addEventListener('click', () => input.focus());
+  
+  input.addEventListener('keydown', handleKeydown);
+}
+
+function setupDraggable(window) {
+  let titleBar = window.querySelector('.title-bar');
+  let isDragging = false;
+  let currentX;
+  let currentY;
+  let initialX;
+  let initialY;
+  let xOffset = 0;
+  let yOffset = 0;
+
+  titleBar.addEventListener('mousedown', dragStart);
+  document.addEventListener('mousemove', drag);
+  document.addEventListener('mouseup', dragEnd);
+
+  function dragStart(e) {
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+
+    if (e.target === titleBar) {
+      isDragging = true;
+    }
+  }
+
+  function drag(e) {
+    if (isDragging) {
+      e.preventDefault();
+      currentX = e.clientX - initialX;
+      currentY = e.clientY - initialY;
+
+      xOffset = currentX;
+      yOffset = currentY;
+
+      setTranslate(currentX, currentY, window);
+    }
+  }
+
+  function dragEnd(e) {
+    initialX = currentX;
+    initialY = currentY;
+    isDragging = false;
+  }
+}
+
+function setupWindowControls(window) {
+  const appName = window.getAttribute('data-app');
+  
+  window.querySelectorAll('.control-button').forEach(button => {
+    button.addEventListener('click', function() {
+      if (this.textContent === '×') {
+        if (window.classList.contains('chat-window')) {
+          chatRoom.close();
+        }
+        window.remove();
+        if (appName) {
+          appStates[appName].isOpen = false;
+          updateTaskbar();
+        }
+      } else if (this.textContent === '□') {
+        // ... maximize code stays the same ...
+      } else if (this.textContent === '−') {
+        window.style.display = 'none';
+      }
+    });
+  });
+}
+
+function setTranslate(xPos, yPos, el) {
+  el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+  
+  // Save position in app state
+  const appName = el.getAttribute('data-app');
+  if (appName && appStates[appName]) {
+    appStates[appName].position = { 
+      x: parseInt(el.style.left || 0) + xPos,
+      y: parseInt(el.style.top || 0) + yPos
+    };
+  }
+}
+
+async function performSearch(query) {
+  try {
+    const response = await fetch('/api/ai_completion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: `Act as a search engine AI. Generate 5 search results for the query: "${query}".
+        Each result should have a title, URL, and brief description.
+        <typescript-interface>
+        interface SearchResult {
+          title: string;
+          url: string;
+          description: string;
+        }
+        interface Response {
+          results: SearchResult[];
+        }
+        </typescript-interface>
+        <example>
+        {
+          "results": [
+            {
+              "title": "What is Machine Learning? A Complete Guide",
+              "url": "https://boogle.door/articles/machine-learning-guide",
+              "description": "Comprehensive overview of machine learning concepts, applications and getting started guide..."
+            }
+          ]
+        }
+        </example>`,
+        data: query
+      }),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error performing search:', error);
+    return null;
+  }
+}
+
+function openOnyx() {
+  const game = document.createElement('div');
+  game.className = 'window';
+  game.setAttribute('data-app', 'onyx');
+  game.style.top = '50px';
+  game.style.left = '200px';
+  game.style.width = '800px';
+  game.style.height = '600px';
+  
+  game.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Half-Life: Onyx - Crystal Clicker</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; color: #FF6600; font-family: monospace; text-align: center;">
+        <h1>Half-Life: Onyx</h1>
+        <div id="crystal-count">Crystals: 0</div>
+        <div id="crystal-button" style="cursor: pointer; margin: 20px; transition: transform 0.1s">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <path d="M50 10 L90 40 L90 60 L50 90 L10 60 L10 40 Z" fill="#FFD700" stroke="#FFA500" stroke-width="2">
+              <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite" />
+            </path>
+          </svg>
+        </div>
+        <div style="font-size: 14px">Click the crystal to harvest its power...</div>
+        <div style="margin-top: 20px; border-top: 1px solid #FF6600; padding-top: 20px; width: 80%;">
+          <h3>Upgrades</h3>
+          <button id="researcher-upgrade" style="background: #FF6600; color: #000; border: none; padding: 10px; cursor: pointer; margin: 10px; display: inline-flex; align-items: center; gap: 10px;">
+            <span>Researcher (50 crystals)</span>
+            <span id="researcher-count">[0]</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.querySelector('.desktop').appendChild(game);
+  setupDraggable(game);
+  setupWindowControls(game);
+
+  appStates.onyx.isOpen = true;
+  updateTaskbar();
+
+  // Game state
+  let crystalCount = 0;
+  let researcherCount = 0;
+  const countDisplay = game.querySelector('#crystal-count');
+  const crystal = game.querySelector('#crystal-button');
+  const researcherButton = game.querySelector('#researcher-upgrade');
+  const researcherCountDisplay = game.querySelector('#researcher-count');
+
+  // Restore state on opening
+  crystalCount = appStates.onyx.crystalCount || 0;
+  researcherCount = appStates.onyx.researcherCount || 0;
+  countDisplay.textContent = `Crystals: ${crystalCount}`;
+  researcherCountDisplay.textContent = `[${researcherCount}]`;
+
+  // Researcher upgrade functionality
+  function buyResearcher() {
+    if (crystalCount >= 50) {
+      crystalCount -= 50;
+      researcherCount++;
+      countDisplay.textContent = `Crystals: ${crystalCount}`;
+      researcherCountDisplay.textContent = `[${researcherCount}]`;
+      
+      appStates.onyx.crystalCount = crystalCount;
+      appStates.onyx.researcherCount = researcherCount;
+    }
+  }
+
+  // Auto-clicking from researchers
+  setInterval(() => {
+    if (researcherCount > 0) {
+      const multiplier = achievements.crystalMaster.unlocked ? 2 : 1;
+      crystalCount += (researcherCount * multiplier);
+      countDisplay.textContent = `Crystals: ${crystalCount}`;
+      
+      appStates.onyx.crystalCount = crystalCount;
+    }
+  }, 2000);
+
+  // Click handlers
+  crystal.addEventListener('click', () => {
+    // Apply x2 multiplier if achievement is unlocked
+    const multiplier = achievements.crystalMaster.unlocked ? 2 : 1;
+    crystalCount += (1 * multiplier);
+    countDisplay.textContent = `Crystals: ${crystalCount}`;
+    
+    // Check for crystal master achievement
+    if (crystalCount >= 1000) {
+      checkAchievement('crystalMaster');
+    }
+    
+    crystal.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+      crystal.style.transform = 'scale(1)';
+    }, 100);
+
+    appStates.onyx.crystalCount = crystalCount;
+  });
+
+  researcherButton.addEventListener('click', buyResearcher);
+}
+
+function openMortir() {
+  if (appStates.mortir.isOpen) {
+    focusApp('mortir');
+    return;
+  }
+
+  const mortir = document.createElement('div');
+  mortir.className = 'window';
+  mortir.setAttribute('data-app', 'mortir');
+  mortir.style.top = '50px';
+  mortir.style.left = '300px';
+  mortir.style.width = '800px';
+  mortir.style.height = '600px';
+  
+  mortir.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Mortir - Community Browser</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <div class="browser-window">
+        <div class="browser-toolbar" style="background: #9C27B0; color: white;">
+          <button class="browser-button" style="background: #7B1FA2; color: white; border: 1px solid #4A148C;">New Post</button>
+          <input type="text" class="url-bar" placeholder="Search community content..." style="background: #E1BEE7;">
+        </div>
+        <div class="browser-content" style="padding: 20px;">
+          <div class="mortir-posts">
+            ${appStates.mortir.posts.map(post => `
+              <div class="mortir-post" style="margin-bottom: 20px; padding: 15px; border: 1px solid #E1BEE7; border-radius: 8px;">
+                <h3>${post.title}</h3>
+                <div>${post.content}</div>
+                <div style="color: #666; font-size: 12px; margin-top: 10px;">Posted by: ${post.author}</div>
+              </div>
+            `).join('') || '<div style="text-align: center; color: #666;">No posts yet. Click "New Post" to add content!</div>'}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.querySelector('.desktop').appendChild(mortir);
+  setupDraggable(mortir);
+  setupWindowControls(mortir);
+  
+  appStates.mortir.isOpen = true;
+  updateTaskbar();
+
+  // Add new post functionality
+  const newPostButton = mortir.querySelector('.browser-button');
+  newPostButton.onclick = () => {
+    const title = prompt('Enter post title:');
+    if (title) {
+      const content = prompt('Enter post content:');
+      if (content) {
+        appStates.mortir.posts.push({
+          title,
+          content,
+          author: 'Anonymous',
+          timestamp: new Date().toISOString()
+        });
+        // Refresh posts display
+        mortir.querySelector('.mortir-posts').innerHTML = appStates.mortir.posts.map(post => `
+          <div class="mortir-post" style="margin-bottom: 20px; padding: 15px; border: 1px solid #E1BEE7; border-radius: 8px;">
+            <h3>${post.title}</h3>
+            <div>${post.content}</div>
+            <div style="color: #666; font-size: 12px; margin-top: 10px;">Posted by: ${post.author}</div>
+          </div>
+        `).join('');
+      }
+    }
+  };
+}
+
+function openBrowser() {
+  if (appStates.browser.isOpen) {
+    focusApp('browser');
+    return;
+  }
+
+  const browser = document.createElement('div');
+  browser.className = 'window';
+  browser.setAttribute('data-app', 'browser');
+  browser.style.top = '50px';
+  browser.style.left = '250px';
+  browser.style.width = '800px';
+  browser.style.height = '600px';
+  
+  browser.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Boogle</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <div class="browser-window">
+        <div class="browser-toolbar">
+          <button class="browser-button">←</button>
+          <button class="browser-button">→</button>
+          <button class="browser-button">↻</button>
+          <input type="text" class="url-bar" value="https://boogle.door">
+        </div>
+        <div class="browser-content">
+          <div class="search-container">
+            <div class="search-logo">Boogle</div>
+            <input type="text" class="search-input" placeholder="Search Boogle or type URL">
+            <div class="search-results"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.querySelector('.desktop').appendChild(browser);
+  setupDraggable(browser);
+  setupWindowControls(browser);
+  
+  appStates.browser.isOpen = true;
+  updateTaskbar();
+
+  // Add search functionality
+  const searchInput = browser.querySelector('.search-input');
+  const resultsDiv = browser.querySelector('.search-results');
+  
+  searchInput.addEventListener('keypress', async (e) => {
+    if (e.key === 'Enter') {
+      const query = searchInput.value.trim().toLowerCase();
+      if (query) {
+        // Add check for inappropriate search
+        if (query.includes('porn')) {
+          checkAchievement('inappropriateSearch');
+          
+          // Remove current browser window
+          browser.remove();
+          appStates.browser.isOpen = false;
+          
+          // Remove browser icon
+          const browserIcon = document.querySelector('.desktop-icon[onclick="openBrowser()"]');
+          browserIcon.remove();
+          
+          // Add new Chromium icon
+          const chromiumIcon = document.createElement('div');
+          chromiumIcon.className = 'desktop-icon';
+          chromiumIcon.onclick = () => openChromium();
+          chromiumIcon.innerHTML = `
+            <img src="/Chromium.png" class="icon-image" alt="Chromium Browser Logo">
+            <div>Chromium</div>
+          `;
+          document.querySelector('.desktop').appendChild(chromiumIcon);
+          
+          // Close current browser
+          updateTaskbar();
+          return;
+        }
+        // Check for websim achievement
+        if (query.includes('websim')) {
+          checkAchievement('websimSeeker');
+        }
+        // Check for SML achievement
+        if (query.toLowerCase() === 'supermariologan') {
+          checkAchievement('smlFan');
+        }
+        resultsDiv.innerHTML = '<p>Searching...</p>';
+        
+        const results = await performSearch(query);
+        if (results && results.results) {
+          resultsDiv.innerHTML = results.results.map(result => `
+            <div style="margin-bottom: 20px;">
+              <a href="#" onclick="displayBrowserContent('${result.url}', this.closest('.browser-content')); return false;" 
+                 style="color: #1a0dab; text-decoration: none; font-size: 18px;">
+                ${result.title}
+              </a>
+              <div style="color: #006621; font-size: 14px;">${result.url}</div>
+              <div style="color: #545454; font-size: 14px;">${result.description}</div>
+            </div>
+          `).join('');
+        } else {
+          resultsDiv.innerHTML = '<p>Error performing search. Please try again.</p>';
+        }
+      }
+    }
+  });
+}
+
+function checkAchievement(achievementId) {
+  if (!achievements[achievementId] || achievements[achievementId].unlocked) {
+    return; // Achievement doesn't exist or is already unlocked
+  }
+
+  achievements[achievementId].unlocked = true;
+
+  // Create achievement notification
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    min-width: 250px;
+  `;
+
+  // Use custom icon for SML Fan achievement, trophy for others
+  const achievementIcon = achievementId === 'smlFan' 
+    ? `<img src="https://0_edj_s1z2mo41fwabta.content.websim.ai/77D9AD0C-D5D4-419F-8DBE-30BFEBF2D5D6.webp?v=56" 
+          alt="SML Puppet" 
+          style="width: 40px; height: 40px; object-fit: contain; margin-right: 10px;">` 
+    : '🏆';
+
+  notification.innerHTML = `
+    <div style="font-size: 18px; margin-bottom: 5px; display: flex; align-items: center;">
+      ${achievementIcon} Achievement Unlocked!
+    </div>
+    <div style="font-weight: bold; margin-bottom: 5px;">${achievements[achievementId].name}</div>
+    <div style="font-size: 14px; color: #ccc;">${achievements[achievementId].description}</div>
+    ${achievements[achievementId].reward ? `<div style="color: #4CAF50; margin-top: 5px;">${achievements[achievementId].reward}</div>` : ''}
+  `;
+
+  document.body.appendChild(notification);
+
+  // Fade in
+  setTimeout(() => {
+    notification.style.opacity = '1';
+    notification.style.transform = 'translateY(0)';
+  }, 100);
+
+  // Wait and fade out
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    notification.style.transform = 'translateY(-20px)';
+    setTimeout(() => notification.remove(), 300);
+  }, 2300);
+
+  // Special achievement actions
+  switch(achievementId) {
+    case 'smlFan':
+      // Achievement for finding SuperMarioLogan
+      // Background colors and account list are already handled by start menu code
+      break;
+    
+    case 'websimSeeker':
+      // Achievement for searching "websim"
+      // Mortir browser addition is handled by terminal command
+      break;
+      
+    case 'crystalMaster':
+      // Achievement for getting 1000 crystals
+      // Crystal multiplier is handled in click handlers
+      break;
+  }
+}
+
+document.querySelector('.start-button').addEventListener('click', function() {
+  // Only show full menu if SML achievement is unlocked
+  if (achievements.smlFan.unlocked) {
+    const startMenu = document.createElement('div');
+    startMenu.className = 'start-menu';
+    startMenu.innerHTML = `
+      <div class="account-section">
+        <div class="current-account">
+          <img src="guest.png" class="account-avatar">
+          <span>Guest</span>
+        </div>
+        <div class="background-picker">
+          <h3>Background Color</h3>
+          ${backgroundColors.map(bg => `
+            <div class="bg-option" onclick="changeBackground('${bg.color}')">
+              <div class="color-preview" style="background: ${bg.color}"></div>
+              ${bg.name}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    // Add styles for start menu
+    const styles = document.createElement('style');
+    styles.textContent = `
+      .start-menu {
+        position: fixed;
+        bottom: 40px;
+        left: 0;
+        background: #c0c0c0;
+        border: 2px solid #fff;
+        border-bottom: none;
+        padding: 10px;
+        min-width: 200px;
+        animation: slideUp 0.2s ease-out;
+      }
+      
+      .account-section {
+        padding: 10px;
+      }
+      
+      .current-account {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 5px;
+        border-bottom: 1px solid #888;
+      }
+      
+      .account-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+      
+      .background-picker {
+        margin-top: 10px;
+      }
+      
+      .bg-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 5px;
+        cursor: pointer;
+      }
+      
+      .bg-option:hover {
+        background: #fff;
+      }
+      
+      .color-preview {
+        width: 16px;
+        height: 16px;
+        border: 1px solid #000;
+      }
+      
+      @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(styles);
+    
+    document.body.appendChild(startMenu);
+    
+    // Close menu when clicking outside
+    const closeMenu = (e) => {
+      if (!startMenu.contains(e.target) && !e.target.matches('.start-button')) {
+        startMenu.remove();
+        document.removeEventListener('click', closeMenu);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', closeMenu), 0);
+  } else {
+    alert('Start menu coming soon!');
+  }
+});
+
+// Add background change function
+function changeBackground(color) {
+  document.body.style.background = color;
+}
+
+// Function to open Achievements
+function openAchievements() {
+  if (appStates.achievements.isOpen) {
+    focusApp('achievements');
+    return;
+  }
+
+  const achievementsWindow = document.createElement('div');
+  achievementsWindow.className = 'window';
+  achievementsWindow.setAttribute('data-app', 'achievements');
+  achievementsWindow.style.width = '400px';
+  achievementsWindow.style.height = '500px';
+  achievementsWindow.style.top = '100px';
+  achievementsWindow.style.left = '300px';
+  
+  achievementsWindow.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Achievements</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content" style="background: #fff; padding: 20px; overflow-y: auto;">
+      ${Object.keys(achievements).map(id => {
+        const achievement = achievements[id];
+        return `
+          <div class="achievement ${achievement.unlocked ? 'unlocked' : ''}">
+            <h3>
+              ${achievement.unlocked ? '🏆' : '❓'} 
+              ${achievement.name}
+            </h3>
+            <div>${achievement.unlocked ? achievement.description : achievement.hint}</div>
+            ${achievement.unlocked && achievement.reward ? 
+              `<div class="achievement-reward">Reward: ${achievement.reward}</div>` : 
+              ''}
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+  
+  document.querySelector('.desktop').appendChild(achievementsWindow);
+  setupDraggable(achievementsWindow);
+  setupWindowControls(achievementsWindow);
+  
+  appStates.achievements.isOpen = true;
+  updateTaskbar();
+}
+
+// Function to open Vapor
+function openVapor() {
+  if (appStates.vapor.isOpen) {
+    focusApp('vapor');
+    return;
+  }
+
+  const vapor = document.createElement('div');
+  vapor.className = 'window';
+  vapor.setAttribute('data-app', 'vapor');
+  vapor.style.width = '600px';
+  vapor.style.height = '500px';
+  vapor.style.top = '100px';
+  vapor.style.left = '350px';
+  
+  // Predefined list of available apps
+  const availableApps = [
+    { name: 'Tetrus', description: 'Classic block stacking game', size: '2.3 MB', installed: false },
+    { name: 'Notewrite', description: 'Simple text editor', size: '1.1 MB', installed: false },
+    { name: 'Calculator++', description: 'Advanced calculator app', size: '0.8 MB', installed: false },
+    { name: 'Paint Studio', description: 'Digital art creation tool', size: '4.2 MB', installed: false },
+    { name: 'Media Player', description: 'Audio and video player', size: '3.7 MB', installed: false }
+  ];
+  
+  vapor.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Vapor - Game Store</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content" style="background: #1b2838; color: #fff; padding: 20px; overflow-y: auto;">
+      <div style="border-bottom: 1px solid #66c0f4; margin-bottom: 20px; padding-bottom: 10px;">
+        <h2 style="color: #66c0f4; margin: 0;">Available Apps</h2>
+      </div>
+      ${availableApps.map(app => `
+        <div style="background: #2a475e; margin-bottom: 10px; padding: 15px; border-radius: 3px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3 style="margin: 0 0 5px 0; color: #66c0f4;">${app.name}</h3>
+              <div style="color: #acdbf5; font-size: 0.9em;">${app.description}</div>
+              <div style="color: #8f98a0; font-size: 0.8em; margin-top: 5px;">Size: ${app.size}</div>
+            </div>
+            <button 
+              onclick="toggleInstall(this, '${app.name}')"
+              style="background: #66c0f4; color: #000; border: none; padding: 8px 15px; border-radius: 2px; cursor: pointer;">
+              Install
+            </button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  document.querySelector('.desktop').appendChild(vapor);
+  setupDraggable(vapor);
+  setupWindowControls(vapor);
+  
+  appStates.vapor.isOpen = true;
+  updateTaskbar();
+}
+
+function toggleInstall(button, appName) {
+  if (button.textContent === 'Install') {
+    button.textContent = 'Installing...';
+    setTimeout(() => {
+      button.textContent = 'Uninstall';
+      button.style.background = '#940000';
+      appStates.vapor.installed.push(appName);
+    }, 1500);
+  } else {
+    button.textContent = 'Install';
+    button.style.background = '#66c0f4';
+    const index = appStates.vapor.installed.indexOf(appName);
+    if (index > -1) {
+      appStates.vapor.installed.splice(index, 1);
+    }
+  }
+}
+
+// Calculator functions
+function openCalculator() {
+  if (appStates.calculator.isOpen) {
+    focusApp('calculator');
+    return;
+  }
+
+  const calc = document.createElement('div');
+  calc.className = 'window';
+  calc.setAttribute('data-app', 'calculator');
+  calc.style.width = '300px';
+  calc.style.height = '400px';
+  calc.style.top = '100px';
+  calc.style.left = '400px';
+  
+  calc.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Calculator</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content" style="background: #f0f0f0; padding: 20px;">
+      <div style="background: white; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
+        <div id="calc-input" style="font-family: monospace; font-size: 1.2em; height: 24px;">0</div>
+        <div id="calc-output" style="font-family: monospace; color: #666; font-size: 0.9em; height: 20px;"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
+        <button class="calc-btn" onclick="calcClear()">C</button>
+        <button class="calc-btn" onclick="calcBackspace()">←</button>
+        <button class="calc-btn" onclick="calcAppend('(')">(</button>
+        <button class="calc-btn" onclick="calcAppend(')')">)</button>
+        
+        <button class="calc-btn" onclick="calcAppend('7')">7</button>
+        <button class="calc-btn" onclick="calcAppend('8')">8</button>
+        <button class="calc-btn" onclick="calcAppend('9')">9</button>
+        <button class="calc-btn" onclick="calcAppend('/')">/</button>
+        
+        <button class="calc-btn" onclick="calcAppend('4')">4</button>
+        <button class="calc-btn" onclick="calcAppend('5')">5</button>
+        <button class="calc-btn" onclick="calcAppend('6')">6</button>
+        <button class="calc-btn" onclick="calcAppend('*')">×</button>
+        
+        <button class="calc-btn" onclick="calcAppend('1')">1</button>
+        <button class="calc-btn" onclick="calcAppend('2')">2</button>
+        <button class="calc-btn" onclick="calcAppend('3')">3</button>
+        <button class="calc-btn" onclick="calcAppend('-')">-</button>
+        
+        <button class="calc-btn" onclick="calcAppend('0')">0</button>
+        <button class="calc-btn" onclick="calcAppend('.')">.</button>
+        <button class="calc-btn" onclick="calcEvaluate()">=</button>
+        <button class="calc-btn" onclick="calcAppend('+')">+</button>
+      </div>
+    </div>
+  `;
+
+  // Add styles for calculator buttons
+  const style = document.createElement('style');
+  style.textContent = `
+    .calc-btn {
+      padding: 10px;
+      font-size: 1.1em;
+      border: 1px solid #ccc;
+      background: white;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .calc-btn:hover {
+      background: #e0e0e0;
+    }
+    .calc-btn:active {
+      background: #d0d0d0;
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.querySelector('.desktop').appendChild(calc);
+  setupDraggable(calc);
+  setupWindowControls(calc);
+  
+  appStates.calculator.isOpen = true;
+  updateTaskbar();
+}
+
+// Calculator functions
+function calcAppend(value) {
+  const input = document.getElementById('calc-input');
+  if (input.textContent === '0') {
+    input.textContent = value;
+  } else {
+    input.textContent += value;
+  }
+  appStates.calculator.currentCalculation = input.textContent;
+}
+
+function calcClear() {
+  const input = document.getElementById('calc-input');
+  const output = document.getElementById('calc-output');
+  input.textContent = '0';
+  output.textContent = '';
+  appStates.calculator.currentCalculation = '';
+}
+
+function calcBackspace() {
+  const input = document.getElementById('calc-input');
+  if (input.textContent.length > 1) {
+    input.textContent = input.textContent.slice(0, -1);
+  } else {
+    input.textContent = '0';
+  }
+  appStates.calculator.currentCalculation = input.textContent;
+}
+
+function calcEvaluate() {
+  const input = document.getElementById('calc-input');
+  const output = document.getElementById('calc-output');
+  try {
+    // Replace × with * for evaluation
+    const expression = input.textContent.replace(/×/g, '*');
+    const result = eval(expression);
+    output.textContent = '= ' + result;
+    input.textContent = result;
+    appStates.calculator.currentCalculation = result;
+  } catch (error) {
+    output.textContent = 'Error';
+  }
+}
+
+// Add the handleKeydown function
+function handleKeydown(e) {
+  if (e.key === 'Enter') {
+    const inputLine = e.target.parentElement;
+    const commandText = e.target.value;
+    
+    // Disable current input and remove cursor styles
+    e.target.disabled = true;
+    e.target.style.cursor = 'default';
+    
+    // Handle the command
+    handleCommand(commandText);
+  }
+}
+
+function createInputLine() {
+  const inputLine = document.createElement('div');
+  inputLine.className = 'terminal-input-line';
+  inputLine.innerHTML = `
+    <span class="terminal-prompt">></span>
+    <input type="text" class="terminal-input" autocomplete="off">
+  `;
+  
+  // Add keydown handler to new input
+  const input = inputLine.querySelector('.terminal-input');
+  input.addEventListener('keydown', handleKeydown);
+  
+  // Focus the new input
+  setTimeout(() => input.focus(), 0);
+  
+  return inputLine;
+}
+
+function openChromium() {
+  if (appStates.chromium.isOpen) {
+    focusApp('chromium');
+    return;
+  }
+
+  const chromium = document.createElement('div');
+  chromium.className = 'window';
+  chromium.setAttribute('data-app', 'chromium');
+  chromium.style.top = '50px';
+  chromium.style.left = '250px';
+  chromium.style.width = '800px';
+  chromium.style.height = '600px';
+  
+  chromium.innerHTML = `
+    <div class="title-bar">
+      <div class="title">Chromium</div>
+      <div class="window-controls">
+        <button class="control-button">−</button>
+        <button class="control-button">□</button>
+        <button class="control-button">×</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <div class="browser-window">
+        <div class="browser-toolbar" style="background: #f1f1f1;">
+          <button class="browser-button">←</button>
+          <button class="browser-button">→</button>
+          <button class="browser-button">↻</button>
+          <input type="text" class="url-bar" value="chrome://newtab">
+        </div>
+        <div class="browser-content">
+          <div style="text-align: center; padding: 100px 20px;">
+            <img src="/Chromium.png" alt="Chromium Logo" style="width: 120px; margin-bottom: 20px;">
+            <div style="font-size: 24px; color: #666; margin-bottom: 20px;">Welcome to Chromium</div>
+            <div style="color: #999;">A safer browsing experience.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.querySelector('.desktop').appendChild(chromium);
+  setupDraggable(chromium);
+  setupWindowControls(chromium);
+  
+  appStates.chromium.isOpen = true;
+  updateTaskbar();
+}
+</script>
+</body>
+</html>
